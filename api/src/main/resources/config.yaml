@@ -1,0 +1,28 @@
+kumuluzee:
+  name: basketball-notifications
+  env:
+    name: dev
+  version: 1.0.0
+  server:
+    base-url: http://localhost:8083
+    http:
+      port: 8083
+  datasources:
+    - jndi-name: jdbc/notificationsDS
+      connection-url: jdbc:postgresql://pg-events.clvqrwayazxs.eu-central-1.rds.amazonaws.com/notifications
+      username: postgres
+      password: postgres12
+  health:
+    checks:
+      data-source-health-check:
+        type: liveness
+        jndi-name: jdbc/notificationsDS
+  metrics:
+    web-instrumentation:
+      - name: notifications-endpoint
+        url-pattern: /v1/notifications/*
+  rest-client:
+    registrations:
+      - class: api
+        url: http://localhost:8083/v1
+        read-timeout: 5000
