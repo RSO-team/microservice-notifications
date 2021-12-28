@@ -28,6 +28,8 @@
         <kumuluzee-rest.version>1.5.1</kumuluzee-rest.version>
         <kumuluzee-cors.version>1.0.6</kumuluzee-cors.version>
         <postgresql.version>42.3.0</postgresql.version>
+        <kumuluzee-openapi-mp.version>1.4.0</kumuluzee-openapi-mp.version>
+        <kumuluzee-config-mp.version>1.4.1</kumuluzee-config-mp.version>
     </properties>
 
     <dependencyManagement>
@@ -39,6 +41,22 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>com.kumuluz.ee.openapi</groupId>
+                <artifactId>kumuluzee-openapi-mp</artifactId>
+                <version>${kumuluzee-openapi-mp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kumuluz.ee.openapi</groupId>
+                <artifactId>kumuluzee-openapi-mp-ui</artifactId>
+                <version>${kumuluzee-openapi-mp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kumuluz.ee.config</groupId>
+                <artifactId>kumuluzee-config-mp</artifactId>
+                <version>${kumuluzee-config-mp.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

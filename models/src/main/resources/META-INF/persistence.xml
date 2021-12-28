@@ -3,7 +3,7 @@
     <persistence-unit name="microservice-notifications-jpa" transaction-type="RESOURCE_LOCAL">
         <non-jta-data-source>jdbc/notificationsDS</non-jta-data-source>
 
-<!--        <class>si.fri.rsoteam.models.entities.ENTITIY</class>-->
+        <class>si.fri.rsoteam.models.entities.NotificationLogEntity</class>
         <class>si.fri.rsoteam.models.converters.InstantAtributeConverter</class>
 
         <properties>

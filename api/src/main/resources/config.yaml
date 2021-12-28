@@ -26,3 +26,10 @@ kumuluzee:
       - class: api
         url: http://localhost:8083/v1
         read-timeout: 5000
+
+rest-config:
+  maintenance-mode: false
+  api-token:
+  d7-token:
+  d7-username:
+  d7-password:
