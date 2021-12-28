@@ -2,6 +2,7 @@ package si.fri.rsoteam.services.beans;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.kumuluz.ee.discovery.annotations.DiscoverService;
 import okhttp3.*;
 import si.fri.rsoteam.dtos.NotificationLogDto;
 import si.fri.rsoteam.dtos.SMSObject;
@@ -9,6 +10,7 @@ import si.fri.rsoteam.services.config.RestConfig;;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import java.net.URI;
 import java.time.Instant;
 import java.util.logging.Logger;
 
@@ -21,6 +23,9 @@ public class SendSMSBean {
 
     @Inject
     private RestConfig config;
+
+    @DiscoverService("basketball-users")
+    private URI userServiceUrl;
 
     public NotificationLogDto sendSMS(SMSObject sms) throws Exception {
 
