@@ -12,6 +12,7 @@ kumuluzee:
       connection-url: jdbc:postgresql://pg-events.clvqrwayazxs.eu-central-1.rds.amazonaws.com/notifications
       username: postgres
       password: postgres12
+      max-pool-size: 3
   health:
     checks:
       data-source-health-check:
@@ -21,6 +22,26 @@ kumuluzee:
     web-instrumentation:
       - name: notifications-endpoint
         url-pattern: /v1/notifications/*
+  logs:
+    config-file: '<?xml version="1.0" encoding="UTF-8"?>
+                          <Configuration name="comments">
+                              <Appenders>
+                                  <Console name="console" target="SYSTEM_OUT">
+                                      <PatternLayout pattern="%d %p %marker %m %X %ex %n"/>
+                                  </Console>
+                                  <Socket name="logstash" host="906c451a-bc58-4cb6-8145-6a2d768e120b-ls.logit.io"
+                                  port="26828" protocol="UDP">
+                                      <JSONLayout complete="false" compact="true" eventEol="true" charset="UTF-8" properties="true"/>
+                                  </Socket>
+                              </Appenders>
+                              <Loggers>
+                                  <!-- Default logger -->
+                                  <Root level="all">
+                                      <AppenderRef ref="console" level="info" />
+                                      <AppenderRef ref="logstash" level="info" />
+                                  </Root>
+                              </Loggers>
+                          </Configuration>'
   rest-client:
     registrations:
       - class: api
@@ -34,7 +55,7 @@ kumuluzee:
 
 rest-config:
   maintenance-mode: false
-  api-token:
-  d7-token:
-  d7-username:
-  d7-password:
+  api-token: htn12kss3
+  d7-token: ZXpvcjU2MzA6QlluYzZkY1I=
+  d7-username: ezor5630
+  d7-password: BYnc6dcR

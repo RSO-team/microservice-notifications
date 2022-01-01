@@ -1,5 +1,9 @@
 package si.fri.rsoteam.api.v1.resources;
 
+import com.kumuluz.ee.logs.LogManager;
+import com.kumuluz.ee.logs.Logger;
+import com.kumuluz.ee.logs.cdi.Log;
+import com.kumuluz.ee.logs.cdi.LogParams;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.headers.Header;
@@ -19,9 +23,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @ApplicationScoped
 @Path("/notifications")
@@ -29,7 +31,7 @@ import java.util.logging.Logger;
 @Consumes(MediaType.APPLICATION_JSON)
 public class NotificationsResource {
 
-    private Logger log = Logger.getLogger(NotificationsResource.class.getName());
+    private Logger log = LogManager.getLogger(NotificationsResource.class.getName());
 
     @Inject
     private NotificationLogBean bean;
@@ -50,6 +52,7 @@ public class NotificationsResource {
                     headers = {@Header(name = "X-Total-Count", description = "Number of objects in list")}
             )
     })
+    @Log(LogParams.METRICS)
     public Response getObjects() {
         List<NotificationLogDto> list = bean.getList();
         return Response.ok(list).build();
@@ -65,6 +68,7 @@ public class NotificationsResource {
             )
     })
     @Path("/{id}")
+    @Log(LogParams.METRICS)
     public Response getObjectById(@PathParam("id") Integer id) {
         NotificationLogDto object = bean.get(id);
         if (object == null) {
@@ -86,6 +90,7 @@ public class NotificationsResource {
                     responseCode = "500"
             ),
     })
+    @Log(LogParams.METRICS)
     public Response createObject(SMSObject dto) {
         try {
             return Response.ok(sms.sendSMS(dto)).build();
@@ -104,6 +109,7 @@ public class NotificationsResource {
             )
     })
     @Path("{objectId}")
+    @Log(LogParams.METRICS)
     public Response updateObjectById(@PathParam("objectId") Integer id,
                                      NotificationLogDto object) {
         return Response.status(201).entity(bean.update(object, id)).build();
@@ -118,6 +124,7 @@ public class NotificationsResource {
             )
     })
     @Path("{objectId}")
+    @Log(LogParams.METRICS)
     public Response deleteObject(@PathParam("objectId") Integer id) {
         bean.delete(id);
         return Response.noContent().build();
