@@ -1,5 +1,7 @@
 package si.fri.rsoteam.services.beans;
 
+import com.kumuluz.ee.logs.LogManager;
+import com.kumuluz.ee.logs.Logger;
 import si.fri.rsoteam.dtos.NotificationLogDto;
 import si.fri.rsoteam.models.entities.NotificationLogEntity;
 import si.fri.rsoteam.services.mappers.NotificationLogMapper;
@@ -10,12 +12,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequestScoped
 public class NotificationLogBean {
-    private Logger log = Logger.getLogger(NotificationLogBean.class.getName());
+    private Logger log = LogManager.getLogger(NotificationLogBean.class.getName());
 
     @PersistenceContext
     private EntityManager em;

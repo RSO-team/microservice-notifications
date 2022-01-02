@@ -43,6 +43,10 @@
             <artifactId>kumuluzee-rest-core</artifactId>
             <version>${kumuluzee-rest.version}</version>
         </dependency>
+        <dependency>
+            <artifactId>kumuluzee-logs-log4j2</artifactId>
+            <groupId>com.kumuluz.ee.logs</groupId>
+        </dependency>
 
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

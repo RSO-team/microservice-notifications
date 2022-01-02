@@ -1,15 +1,16 @@
 package si.fri.rsoteam.api.v1.watches;
 
 import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
+import com.kumuluz.ee.logs.LogManager;
+import com.kumuluz.ee.logs.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
-import java.util.logging.Logger;
 
 @ApplicationScoped
 public class ConfigWatch {
-    private static final Logger log = Logger.getLogger(ConfigWatch.class.getName());
+    private static final Logger log = LogManager.getLogger(ConfigWatch.class.getName());
 
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
 

@@ -3,6 +3,8 @@ package si.fri.rsoteam.services.beans;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kumuluz.ee.discovery.annotations.DiscoverService;
+import com.kumuluz.ee.logs.LogManager;
+import com.kumuluz.ee.logs.Logger;
 import okhttp3.*;
 import si.fri.rsoteam.dtos.NotificationLogDto;
 import si.fri.rsoteam.dtos.SMSObject;
@@ -12,11 +14,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.net.URI;
 import java.time.Instant;
-import java.util.logging.Logger;
 
 @RequestScoped
 public class SendSMSBean {
-    private final Logger log = Logger.getLogger(SendSMSBean.class.getName());
+    private final Logger log = LogManager.getLogger(SendSMSBean.class.getName());
 
     @Inject
     private NotificationLogBean logBean;
