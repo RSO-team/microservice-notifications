@@ -25,6 +25,21 @@ spec:
                 secretKeyRef:
                   name: pg-pass-notifications
                   key: KUMULUZEE_DATASOURCES0_PASSWORD
+            - name: RESTCONFIG_D7TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: d7-token
+                  key: RESTCONFIG_D7TOKEN
+            - name: RESTCONFIG_D7USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: d7-username
+                  key: RESTCONFIG_D7USERNAME
+            - name: RESTCONFIG_D7PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: d7-password
+                  key: RESTCONFIG_D7PASSWORD
           ports:
             - containerPort: 8083
               name: server

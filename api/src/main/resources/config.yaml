@@ -47,15 +47,21 @@ kumuluzee:
       - class: api
         url: http://localhost:8083/v1
         read-timeout: 5000
+  cors-filter:
+    servlet:
+      allow-origin: "*"
+      supported-methods: "GET,POST,HEAD,OPTIONS,PUT,DELETE"
   discovery:
     etcd:
       hosts: http://localhost:2379
     ttl: 30
     ping-interval: 5
-  cors-filter:
-    servlet:
-      allow-origin: "*"
-      supported-methods: "GET,POST,HEAD,OPTIONS,PUT,DELETE"
+  config:
+    start-retry-delay-ms: 500
+    max-retry-delay-ms: 900000
+    etcd:
+      hosts: http://localhost:2379
+
 rest-config:
   maintenance-mode: false
   api-token: htn12kss3
