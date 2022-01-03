@@ -18,6 +18,9 @@ kumuluzee:
       data-source-health-check:
         type: liveness
         jndi-name: jdbc/notificationsDS
+      disk-space-health-check:
+        threshold: 100000000
+
   metrics:
     web-instrumentation:
       - name: notifications-endpoint
