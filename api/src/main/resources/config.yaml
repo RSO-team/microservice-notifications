@@ -55,6 +55,7 @@ kumuluzee:
   cors-filter:
     servlet:
       allow-origin: "*"
+      supported-methods: "GET,POST,HEAD,OPTIONS,PUT,DELETE"
 rest-config:
   maintenance-mode: false
   api-token: htn12kss3
