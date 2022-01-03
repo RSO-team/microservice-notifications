@@ -6,10 +6,12 @@ import com.kumuluz.ee.discovery.annotations.DiscoverService;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import okhttp3.*;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import si.fri.rsoteam.dtos.NotificationLogDto;
 import si.fri.rsoteam.dtos.SMSObject;
 import si.fri.rsoteam.dtos.UserDto;
-import si.fri.rsoteam.services.config.RestConfig;;
+import si.fri.rsoteam.services.config.RestConfig;
+import si.fri.rsoteam.services.services.clients.UsersApi;;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -21,9 +23,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 @RequestScoped
 public class SendSMSBean {
@@ -36,14 +40,26 @@ public class SendSMSBean {
     private RestConfig config;
 
     @Inject
+    private RestConfig restConfig;
+
+    @Inject
     @DiscoverService(value = "basketball-users")
-    private Optional<URL> userServiceUrl;
+    private URL userServiceUrl;
 
     private Client httpClient;
 
+    private UsersApi usersApi;
+
     @PostConstruct
-    private void init() {
+    private void init() throws URISyntaxException {
         httpClient = ClientBuilder.newClient();
+
+        if (userServiceUrl != null) {
+            usersApi = RestClientBuilder
+                    .newBuilder()
+                    .baseUri(userServiceUrl.toURI())
+                    .build(UsersApi.class);
+        }
     }
 
     public NotificationLogDto sendSMStoNumber(SMSObject sms) throws Exception {
@@ -57,6 +73,25 @@ public class SendSMSBean {
             return this.sendSMS(sms);
         }
         return null;
+    }
+
+    public void sendSMStoUserAsync(Integer userId, SMSObject sms) {
+        CompletionStage<UserDto> stringCompletionStage = this.usersApi.getUser(userId);
+        stringCompletionStage.whenComplete((user, throwable) -> {
+            if (user.id != null) {
+                sms.to = user.gsm;
+                try {
+                    this.sendSMS(sms);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        stringCompletionStage.exceptionally(throwable -> {
+            log.error(throwable.getMessage());
+            return null;
+        });
     }
 
     private NotificationLogDto sendSMS(SMSObject sms) throws Exception {
@@ -98,20 +133,19 @@ public class SendSMSBean {
         return nld;
     }
 
-
-
     private UserDto getUser(Integer id) {
-        if (userServiceUrl.isPresent()) {
+        if (userServiceUrl != null) {
             try {
-                String host = userServiceUrl.get().getProtocol() +
-                        "://" +
-                        userServiceUrl.get().getHost() + ":" +
-                        userServiceUrl.get().getPort() +
-                        "/v1/users/" +
-                        id;
+                String host = String.format("%s://%s:%s/v1/users/%d",
+                        userServiceUrl.getProtocol(),
+                        userServiceUrl.getHost(),
+                        userServiceUrl.getPort(),
+                        id);
                 UserDto response = httpClient
                         .target(host)
-                        .request().get(new GenericType<>() {
+                        .request()
+                        .header("apiToken", restConfig.getApiToken())
+                        .get(new GenericType<>() {
                         });
                 log.info(response.toString());
                 return response;
