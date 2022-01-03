@@ -43,6 +43,10 @@
         </dependency>
 
         <dependency>
+            <groupId>com.kumuluz.ee.cors</groupId>
+            <artifactId>kumuluzee-cors</artifactId>
+        </dependency>
+        <dependency>
             <groupId>si.fri.rsoteam</groupId>
             <artifactId>services</artifactId>
             <version>${project.version}</version>
