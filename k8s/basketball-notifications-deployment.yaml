@@ -17,13 +17,13 @@ spec:
           name: basketball-notifications
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
-              value: jdbc:postgresql://pg-events.clvqrwayazxs.eu-central-1.rds.amazonaws.com/notifications
+              value: jdbc:postgresql://ella.db.elephantsql.com/kzkuvmbs
             - name: KUMULUZEE_DATASOURCES0_USERNAME
-              value: postgres
+              value: kzkuvmbs
             - name: KUMULUZEE_DATASOURCES0_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pg-pass
+                  name: pg-pass-notifications
                   key: KUMULUZEE_DATASOURCES0_PASSWORD
           ports:
             - containerPort: 8083

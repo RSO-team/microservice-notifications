@@ -9,10 +9,10 @@ kumuluzee:
       port: 8083
   datasources:
     - jndi-name: jdbc/notificationsDS
-      connection-url: jdbc:postgresql://pg-events.clvqrwayazxs.eu-central-1.rds.amazonaws.com/notifications
-      username: postgres
-      password: postgres12
-      max-pool-size: 3
+      connection-url: jdbc:postgresql://ella.db.elephantsql.com/kzkuvmbs
+      username: kzkuvmbs
+      password: XRaxJulUpB-cwAZAopySsQAJQ9wfs01n
+      max-pool-size: 1
   health:
     checks:
       data-source-health-check:
