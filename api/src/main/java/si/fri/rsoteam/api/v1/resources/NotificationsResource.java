@@ -93,8 +93,33 @@ public class NotificationsResource {
     @Log(LogParams.METRICS)
     public Response createObject(SMSObject dto) {
         try {
-            return Response.ok(sms.sendSMS(dto)).build();
+            return Response.ok(sms.sendSMStoNumber(dto)).build();
         } catch (Exception e) {
+            log.error(e.getMessage());
+            return Response.serverError().build();
+        }
+    }
+
+    @POST
+    @Path("{userId}")
+    @Operation(summary = "Creates new notification, logs it and returns it", description = "Sends notification.")
+    @APIResponses({
+            @APIResponse(
+                    description = "User details",
+                    responseCode = "201",
+                    content = @Content(schema = @Schema(implementation = NotificationLogDto.class))
+            ),
+            @APIResponse(
+                    description = "Error while sending sms",
+                    responseCode = "500"
+            ),
+    })
+    @Log(LogParams.METRICS)
+    public Response sendSMStoUser(@PathParam("userId") Integer id, SMSObject dto) {
+        try {
+            return Response.ok(sms.sendSMStoUser(id, dto)).build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
             return Response.serverError().build();
         }
     }

@@ -8,12 +8,22 @@ import com.kumuluz.ee.logs.Logger;
 import okhttp3.*;
 import si.fri.rsoteam.dtos.NotificationLogDto;
 import si.fri.rsoteam.dtos.SMSObject;
+import si.fri.rsoteam.dtos.UserDto;
 import si.fri.rsoteam.services.config.RestConfig;;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.GenericType;
 import java.net.URI;
+import java.net.URL;
 import java.time.Instant;
+import java.util.Optional;
 
 @RequestScoped
 public class SendSMSBean {
@@ -25,10 +35,31 @@ public class SendSMSBean {
     @Inject
     private RestConfig config;
 
-    @DiscoverService("basketball-users")
-    private URI userServiceUrl;
+    @Inject
+    @DiscoverService(value = "basketball-users")
+    private Optional<URL> userServiceUrl;
 
-    public NotificationLogDto sendSMS(SMSObject sms) throws Exception {
+    private Client httpClient;
+
+    @PostConstruct
+    private void init() {
+        httpClient = ClientBuilder.newClient();
+    }
+
+    public NotificationLogDto sendSMStoNumber(SMSObject sms) throws Exception {
+        return this.sendSMS(sms);
+    }
+
+    public NotificationLogDto sendSMStoUser(Integer userId, SMSObject sms) throws Exception {
+        UserDto user = this.getUser(userId);
+        if (user.id != null) {
+            sms.to = user.gsm;
+            return this.sendSMS(sms);
+        }
+        return null;
+    }
+
+    private NotificationLogDto sendSMS(SMSObject sms) throws Exception {
 
         ObjectWriter ow = new ObjectMapper().writer();
         byte[] object = ow.writeValueAsBytes(sms);
@@ -54,7 +85,7 @@ public class SendSMSBean {
                 .setContent(sms.content)
                 .setSender(sms.from)
                 .setReceiver(String.valueOf(sms.to))
-                .setSentAt(Instant.now())
+                .setSentAt(response.code() == 200 ? Instant.now() : null)
                 .setTimestamp(Instant.now());
 
         logBean.create(nld);
@@ -65,5 +96,31 @@ public class SendSMSBean {
         }
 
         return nld;
+    }
+
+
+
+    private UserDto getUser(Integer id) {
+        if (userServiceUrl.isPresent()) {
+            try {
+                String host = userServiceUrl.get().getProtocol() +
+                        "://" +
+                        userServiceUrl.get().getHost() + ":" +
+                        userServiceUrl.get().getPort() +
+                        "/v1/users/" +
+                        id;
+                UserDto response = httpClient
+                        .target(host)
+                        .request().get(new GenericType<>() {
+                        });
+                log.info(response.toString());
+                return response;
+            }
+            catch (WebApplicationException | ProcessingException e) {
+                log.error(e.getMessage());
+                throw new InternalServerErrorException(e);
+            }
+        }
+        return null;
     }
 }
