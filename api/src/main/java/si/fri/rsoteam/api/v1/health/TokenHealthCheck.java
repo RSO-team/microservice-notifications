@@ -17,10 +17,10 @@ public class TokenHealthCheck implements HealthCheck {
 
     @Override
     public HealthCheckResponse call() {
-        if (restProperties.getD7Token() != null) {
-            return HealthCheckResponse.down(MaintenanceHealthCheck.class.getSimpleName());
+        if (restProperties.getD7Token() == null) {
+            return HealthCheckResponse.down(TokenHealthCheck.class.getSimpleName());
         } else {
-            return HealthCheckResponse.up(MaintenanceHealthCheck.class.getSimpleName());
+            return HealthCheckResponse.up(TokenHealthCheck.class.getSimpleName());
         }
     }
 }
