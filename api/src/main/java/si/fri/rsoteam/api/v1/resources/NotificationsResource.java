@@ -149,6 +149,33 @@ public class NotificationsResource {
         }
     }
 
+    @POST
+    @Path("/list")
+    @Operation(summary = "Creates new notification, logs it and returns it async", description = "Sends notification async.")
+    @APIResponses({
+            @APIResponse(
+                    description = "nothing",
+                    responseCode = "201",
+                    content = @Content(schema = @Schema(implementation = NotificationLogDto.class))
+            ),
+            @APIResponse(
+                    description = "Error while sending sms",
+                    responseCode = "500"
+            ),
+    })
+    @Log(LogParams.METRICS)
+    public Response sendSMStoUsersAsync(List<SMSObject> dtos) {
+        try {
+            for (SMSObject dto : dtos) {
+                sms.sendSMStoUser(dto.userId, dto);
+            }
+            return Response.ok().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return Response.serverError().build();
+        }
+    }
+
     @PUT
     @Operation(summary = "Updates notification log and returns it", description = "Returns notification log.")
     @APIResponses({

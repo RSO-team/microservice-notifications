@@ -68,6 +68,9 @@ public class SendSMSBean {
 
     public NotificationLogDto sendSMStoUser(Integer userId, SMSObject sms) throws Exception {
         UserDto user = this.getUser(userId);
+        if (user == null) {
+            return null;
+        }
         if (user.id != null) {
             sms.to = user.gsm;
             return this.sendSMS(sms);
@@ -135,25 +138,19 @@ public class SendSMSBean {
 
     private UserDto getUser(Integer id) {
         if (userServiceUrl != null) {
-            try {
-                String host = String.format("%s://%s:%s/v1/users/%d",
-                        userServiceUrl.getProtocol(),
-                        userServiceUrl.getHost(),
-                        userServiceUrl.getPort(),
-                        id);
-                UserDto response = httpClient
-                        .target(host)
-                        .request()
-                        .header("apiToken", restConfig.getApiToken())
-                        .get(new GenericType<>() {
-                        });
-                log.info(response.toString());
-                return response;
-            }
-            catch (WebApplicationException | ProcessingException e) {
-                log.error(e.getMessage());
-                throw new InternalServerErrorException(e);
-            }
+            String host = String.format("%s://%s:%s/v1/users/%d",
+                    userServiceUrl.getProtocol(),
+                    userServiceUrl.getHost(),
+                    userServiceUrl.getPort(),
+                    id);
+            UserDto response = httpClient
+                    .target(host)
+                    .request()
+                    .header("apiToken", restConfig.getApiToken())
+                    .get(new GenericType<>() {
+                    });
+            log.info(response.toString());
+            return response;
         }
         return null;
     }
