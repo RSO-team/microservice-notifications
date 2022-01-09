@@ -52,14 +52,14 @@ spec:
             httpGet:
               path: /health/live
               port: server
-            initialDelaySeconds: 20
-            periodSeconds: 3
+            initialDelaySeconds: 40
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /health/ready
               port: server
-            initialDelaySeconds: 20
-            periodSeconds: 3
+            initialDelaySeconds: 40
+            periodSeconds: 10
 ---
 
 apiVersion: v1
