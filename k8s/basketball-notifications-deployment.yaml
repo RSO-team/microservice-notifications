@@ -67,7 +67,7 @@ kind: Service
 metadata:
   name: basketball-notifications
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 8083
       protocol: TCP
