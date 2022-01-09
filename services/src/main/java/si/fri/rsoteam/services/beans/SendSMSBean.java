@@ -21,6 +21,7 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,22 +45,20 @@ public class SendSMSBean {
 
     @Inject
     @DiscoverService(value = "basketball-users")
-    private URL userServiceUrl;
+    private Optional<WebTarget> userServiceUrl;
 
     private Client httpClient;
 
     private UsersApi usersApi;
 
     @PostConstruct
-    private void init() throws URISyntaxException {
+    private void init() {
         httpClient = ClientBuilder.newClient();
 
-        if (userServiceUrl != null) {
-            usersApi = RestClientBuilder
-                    .newBuilder()
-                    .baseUri(userServiceUrl.toURI())
-                    .build(UsersApi.class);
-        }
+        userServiceUrl.ifPresent(webTarget -> usersApi = RestClientBuilder
+                .newBuilder()
+                .baseUri(webTarget.getUri())
+                .build(UsersApi.class));
     }
 
     public NotificationLogDto sendSMStoNumber(SMSObject sms) throws Exception {
@@ -137,11 +136,9 @@ public class SendSMSBean {
     }
 
     private UserDto getUser(Integer id) {
-        if (userServiceUrl != null) {
-            String host = String.format("%s://%s:%s/v1/users/%d",
-                    userServiceUrl.getProtocol(),
-                    userServiceUrl.getHost(),
-                    userServiceUrl.getPort(),
+        if (userServiceUrl.isPresent()) {
+            String host = String.format("%s/v1/users/%d",
+                    userServiceUrl.get().getUri(),
                     id);
             UserDto response = httpClient
                     .target(host)
