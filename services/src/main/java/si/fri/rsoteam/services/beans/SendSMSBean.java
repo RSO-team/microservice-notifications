@@ -8,6 +8,7 @@ import com.kumuluz.ee.logs.Logger;
 import okhttp3.*;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import si.fri.rsoteam.dtos.NotificationLogDto;
+import si.fri.rsoteam.dtos.SMSD7;
 import si.fri.rsoteam.dtos.SMSObject;
 import si.fri.rsoteam.dtos.UserDto;
 import si.fri.rsoteam.services.config.RestConfig;
@@ -98,8 +99,13 @@ public class SendSMSBean {
 
     private NotificationLogDto sendSMS(SMSObject sms) throws Exception {
 
+        SMSD7 smsd7 = new SMSD7();
+        smsd7.content = sms.content;
+        smsd7.to = sms.to;
+        smsd7.from = sms.from;
+
         ObjectWriter ow = new ObjectMapper().writer();
-        byte[] object = ow.writeValueAsBytes(sms);
+        byte[] object = ow.writeValueAsBytes(smsd7);
 
         String token = config.getD7Token();
 
