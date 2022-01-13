@@ -132,6 +132,8 @@ public class SendSMSBean {
             log.info(response.body().string());
         }
 
+        response.close();
+
         return nld;
     }
 
