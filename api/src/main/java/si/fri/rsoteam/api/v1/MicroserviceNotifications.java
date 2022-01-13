@@ -18,7 +18,7 @@ import javax.ws.rs.core.Application;
                 contact = @Contact(),
                 license = @License(name = "none")
         ),
-        servers = @Server(url = "http://localhost:8083"),
+        servers = @Server(url = "http://52.226.192.49/notifications"),
         security = @SecurityRequirement(name = "none"))
 @RegisterService
 @ApplicationPath("/v1")
